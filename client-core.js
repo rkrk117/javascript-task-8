@@ -8,24 +8,15 @@ const request = require('request');
 const red = chalk.hex('#f00');
 const green = chalk.hex('#0f0');
 
-function addParameter(res, name, args) {
-    for (let i in args) {
-        if (args[i] === name) {
-            return args[i + 1];
-        }
-        if (args[i].indexOf(name) !== -1) {
-            return args[i].slice(args[i].indexOf('=') + 1);
-        }
-    }
-}
+function setCommander(device) {
+    device
+        .option('--from <name>')
+        .option('--to <name>')
+        .option('--text <text>');
 
-function parseArgs(args) {
-    var result = {};
-    result.from = addParameter(result, '--from', args);
-    result.to = addParameter(result, '--to', args);
-    result.text = addParameter(result, '--text', args);
-
-    return result;
+    device.to = undefined;
+    device.from = undefined;
+    device.text = undefined;
 }
 
 function performOutput(message) {
@@ -42,7 +33,10 @@ function performOutput(message) {
 }
 
 function execute() {
-    let opts = parseArgs(process.argv);
+    let commander = require('commander');
+    setCommander(commander);
+    let opts = commander.parse(process.argv);
+
     function requestPromise({ qs = {}, method = 'GET', json = true }) {
         return new Promise((resolve, reject) => {
             request({ baseUrl: 'http://localhost:8080/messages/', url: '/', qs, method, json },
