@@ -25,7 +25,7 @@ server.on('request', (req, res) => {
     let query = urlapi.parse(req.url).query;
     let { from, to } = queryapi.parse(query);
     res.setHeader('content-type', 'application/json');
-    if ((/^\/messages/).test(req.url)) {
+    if ((/^\/messages($|\?)/).test(req.url)) {
         if (req.method === 'GET') {
             res.write(JSON.stringify(vault.filter(filterForQuery(from, to))));
             res.end();
