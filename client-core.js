@@ -20,16 +20,11 @@ function setCommander(device) {
 }
 
 function performOutput(message) {
-    let result = '';
-    if (message.from) {
-        result += (`${red('FROM')}: ${message.from}\n`);
-    }
-    if (message.to) {
-        result += (`${red('TO')}: ${message.to}\n`);
-    }
-    result += (`${green('TEXT')}: ${message.text}`);
-
-    return result;
+    return [
+        message.from && `${red('FROM')}: ${message.from}`,
+        message.to && `${red('TO')}: ${message.to}`,
+        `${green('TEXT')}: ${message.text}`
+    ].filter(Boolean).join('\n');
 }
 
 function execute() {
@@ -54,6 +49,6 @@ function execute() {
                 method: 'POST', json: { text: opts.text } })
                 .then(x => performOutput(x));
         default:
-            return Promise.reject();
+            return Promise.reject('Supported only: list, send');
     }
 }
