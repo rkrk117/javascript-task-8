@@ -12,7 +12,9 @@ function setCommander(device) {
     device
         .option('--from <name>')
         .option('--to <name>')
-        .option('--text <text>');
+        .option('--text <text>')
+        .command('list')
+        .command('send');
 
     device.to = undefined;
     device.from = undefined;
@@ -39,7 +41,7 @@ function execute() {
         });
     }
 
-    switch (process.argv[2]) {
+    switch (opts.args[0]) {
         case 'list':
             return requestPromise({ qs: { from: opts.from, to: opts.to } })
                 .then(messages => messages.map(x => performOutput(x)))
